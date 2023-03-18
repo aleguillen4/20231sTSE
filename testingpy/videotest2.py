@@ -3,7 +3,7 @@ gi.require_version('Gst', '1.0')
 gi.require_version('Gtk', '4.0')
 from gi.repository import Gst
 from gi.repository import Gtk
-
+from gi.repository import GLib
 
 Gst.init(None)
 class MyApp(Gtk.Window, Gtk.Widget):
@@ -39,9 +39,7 @@ class MyApp(Gtk.Window, Gtk.Widget):
         # Creamos un botón para mutear el audio
         self.mute_button = Gtk.Button(label="Mute Audio")
         self.mute_button.connect("clicked", self.on_mute_button_clicked)
-        #vbox.pack_start(self.mute_button, True, True, 0)
-        vbox.append(self.mute_button, True)
-
+        vbox.append(self.mute_button)
 
         # Iniciamos el pipeline
         self.pipeline.set_state(Gst.State.PLAYING)
@@ -59,5 +57,5 @@ class MyApp(Gtk.Window, Gtk.Widget):
 win = MyApp()
 win.connect("destroy", Gtk.main_quit)
 win.show_all()
+GLib.timeout_add_seconds(60, Gtk.main_quit)
 Gtk.main()
-
