@@ -58,51 +58,7 @@ class GstreamerPipeline:
 
     def stop(self):
         self.pipeline.set_state(Gst.State.NULL)
-"""
-class ApplicationWindow(Gtk.Window):
-    def __init__(self):
-        Gtk.Window.__init__(self, title="Audio/Video Chat")
 
-        self.set_default_size(600, 400)
-        self.set_position(Gtk.WindowPosition.CENTER)
-
-        vbox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=6)
-        self.add(vbox)
-
-        video_window = Gtk.DrawingArea()
-        video_window.set_size_request(400, 300)
-        vbox.pack_start(video_window, True, True, 0)
-
-        button_box = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=6)
-        vbox.pack_start(button_box, False, False, 0)
-
-        mute_button = Gtk.Button(label="Mute Audio")
-        mute_button.connect("clicked", self.on_mute_button_clicked)
-        button_box.pack_start(mute_button, False, False, 0)
-
-        self.pipeline = GstreamerPipeline()
-        bus = self.pipeline.pipeline.get_bus()
-        bus.add_signal_watch()
-        bus.connect("message::eos", self.on_eos)
-        bus.connect("message::error", self.on_error)
-    def on_mute_button_clicked(self, button):
-        audio_sink = self.pipeline.audio_sink
-        is_muted = audio_sink.get_property("mute")
-        audio_sink.set_property("mute", not is_muted)
-        button_label = "Mute Audio" if is_muted else "Unmute Audio"
-        button.set_label(button_label)
-
-    def on_eos(self, bus, message):
-        print("End of stream")
-        self.pipeline.stop()
-        Gtk.main_quit()
-
-    def on_error(self, bus, message):
-        error, debug_info = message.parse_error()
-        print(f"Error: {error.message}, Debug info: {debug_info}")
-        self.pipeline.stop()
-        Gtk.main_quit()
-"""
 class ApplicationWindow(Gtk.Window):
 
     def __init__(self):
@@ -144,36 +100,3 @@ if __name__ == "__main__":
     Gtk.main()
 
 
-
-
-"""
-class ApplicationWindow(Gtk.Window):
-
-    def __init__(self):
-        super().__init__(title="Python-GStreamer Video Test")
-
-        self.set_default_size(800, 600)
-
-        vbox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
-        self.add(vbox)
-
-        video_window = Gtk.DrawingArea()
-        video_window.set_size_request(640, 480)
-        vbox.pack_start(video_window, True, True, 0)
-
-        button_box = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL)
-        vbox.pack_start(button_box, False, False, 0)
-
-        mute_button = Gtk.Button(label="Mute Audio")
-        mute_button.connect("clicked", self.on_mute_button_clicked)
-        button_box.pack_start(mute_button, False, False, 0)
-
-        self.pipeline = GstreamerPipeline(video_window.get_window())
-
-    def on_mute_button_clicked(self, button):
-        audio_sink = self.pipeline.audio_sink
-        is_muted = audio_sink.get_property("mute")
-        audio_sink.set_property("mute", not is_muted)
-        button_label = "Mute Audio" if is_muted else "Unmute Audio"
-        button.set_label(button_label)
-"""
