@@ -11,3 +11,81 @@ y se fue a la dirección con cd make-<VERSION>,
 se instaló con  ./configure  make  sudo make install 
 Se verificó la instalación con make --version
 La versión es la 3.7
+----------------------------------------------
+Se  habilitaron:
+BB_SIGNATURE_HANDLER = "OEEquivHash"
+BB_HASHSERVE = "auto"
+BB_HASHSERVE_UPSTREAM = "hashserv.yocto.io:8687"
+SSTATE_MIRRORS ?= "file://.* https://sstate.yoctoproject.org/all/PATH;downloadfilename=PATH"
+Luego para crear la imagen se usó el comando: bitbake -k core-image-minimal
+Y con el comando : runqemu qemux86-64 , se observó la termianl creemos que este funcionó porque en el local.con estan como "qemux86-64"
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------
+
+El proyecto Yocto tiene una estructura de directorios bien definida que es importante conocer para trabajar con él. A continuación, se describe brevemente cada uno de los directorios principales:
+
+build: Este directorio es donde se realiza la construcción de la imagen. Contiene los archivos de configuración de la imagen, así como los archivos generados durante el proceso de construcción.
+
+meta: Este directorio es donde se encuentran las capas de metadatos que definen el comportamiento del sistema. Incluye metadatos para el núcleo de Linux, el sistema de inicio, los paquetes y las configuraciones.
+
+poky: Este directorio contiene el núcleo de Yocto, incluyendo el código fuente y los scripts necesarios para construir la imagen.
+
+downloads: Este directorio es donde se descargan los archivos necesarios para construir la imagen, como el código fuente de los paquetes y las herramientas.
+
+sstate-cache: Este directorio es donde se almacenan las versiones preconstruidas de los paquetes y las herramientas para acelerar el proceso de construcción.
+
+tmp: Este directorio contiene archivos temporales generados durante el proceso de construcción, como los archivos de objeto y los registros.
+
+La estructura de directorios de Yocto es altamente personalizable y puede ser adaptada a las necesidades específicas de cada proyecto. Además de los directorios mencionados anteriormente, se pueden agregar capas adicionales, que contienen metadatos personalizados, y se pueden especificar rutas de búsqueda adicionales para los archivos necesarios para la construcción.
+--------------------------------------------------------------------------
+
+El flujo de trabajo típico con Yocto Project implica los siguientes pasos:
+
+Configuración del entorno: Antes de comenzar a trabajar con Yocto, debes configurar el entorno de desarrollo. Esto implica instalar las herramientas y dependencias necesarias, como git, tar, wget, gcc, etc.
+
+Descarga del código fuente: Una vez que se ha configurado el entorno de desarrollo, el siguiente paso es descargar el código fuente de Yocto. Puedes hacer esto clonando el repositorio de Yocto desde GitHub o descargando una versión preconstruida desde el sitio web oficial.
+
+Configuración de la imagen: La siguiente etapa es configurar la imagen que deseas construir. Yocto utiliza un archivo de configuración llamado local.conf para definir la configuración de la imagen. Puedes modificar este archivo para ajustar la configuración según tus necesidades.
+
+Construcción de la imagen: Una vez que se ha configurado la imagen, puedes comenzar a construirla utilizando el comando bitbake. Esto compilará los paquetes necesarios y creará una imagen que se puede utilizar para arrancar un sistema.
+
+Pruebas y depuración: Una vez que se ha construido la imagen, es importante probarla y depurarla. Puedes hacer esto simulando la imagen en una máquina virtual o en un dispositivo de hardware.
+
+Personalización y expansión: Yocto es altamente personalizable, lo que significa que puedes agregar tus propias capas de metadatos y paquetes, así como personalizar la configuración de la imagen. Esto te permite crear sistemas altamente especializados y personalizados.
+
+En resumen, el flujo de trabajo con Yocto Project implica la configuración de la imagen, la construcción de la imagen, las pruebas y la depuración, y la personalización y expansión. Es un proceso iterativo que implica ajustar la configuración y agregar nuevas características hasta que se alcance el resultado deseado.
+---------------------------------------------------------------------------------------------------
+
+Los metadatos en Yocto Project son archivos que describen cómo construir un sistema Linux personalizado utilizando Yocto. En otras palabras, son archivos que proporcionan información sobre los paquetes, capas, configuraciones y otras características del sistema que se está construyendo.
+
+Los metadatos se almacenan en capas, que son colecciones de metadatos relacionados. Por ejemplo, hay capas para el núcleo de Linux, el sistema de inicio, los paquetes, la configuración de la imagen y otros componentes. Cada capa contiene archivos de metadatos que describen cómo construir ese componente específico.
+
+Los metadatos de Yocto Project se utilizan para personalizar y configurar el sistema que se está construyendo. Por ejemplo, los archivos de metadatos pueden definir qué paquetes se deben incluir en la imagen, cómo se deben configurar los paquetes, cómo se deben crear los scripts de inicio y otros aspectos del sistema. Los archivos de metadatos también pueden contener parches para los paquetes existentes, configuraciones personalizadas y otros ajustes para adaptar el sistema a las necesidades específicas del proyecto.
+
+En resumen, los metadatos de Yocto Project son una parte fundamental del sistema. Proporcionan la información necesaria para construir un sistema Linux personalizado y permiten una gran flexibilidad y personalización en el proceso de construcción.
+
+---------------------------------------------------
+
+Los scripts de inicio en los metadatos de Yocto Project son archivos que se utilizan para iniciar el sistema operativo Linux y sus servicios asociados. Estos scripts de inicio se encuentran en la capa de metadatos de la imagen y se utilizan para definir cómo se inicializarán los servicios del sistema durante el arranque.
+
+Los scripts de inicio se ejecutan automáticamente cuando se inicia el sistema operativo y pueden contener comandos para realizar tareas como la configuración de la red, la carga de controladores de dispositivos, la inicialización de servicios y la configuración de variables de entorno.
+
+Los scripts de inicio se escriben en lenguajes de script como shell, Python o Perl, y están diseñados para ser configurables y personalizables. Por ejemplo, los desarrolladores pueden crear y modificar scripts de inicio para agregar nuevas funcionalidades al sistema, definir configuraciones personalizadas y ajustar la configuración del sistema según las necesidades del proyecto.
+
+En resumen, los scripts de inicio en los metadatos de Yocto Project son una parte importante del proceso de arranque del sistema operativo Linux. Estos scripts se utilizan para iniciar los servicios del sistema y configurar el entorno del sistema para garantizar que el sistema se inicie de manera eficiente y sin problemas.
+
+--------------------------------------------------------------------------
+
+La selección de paquetes que deben incluirse en la imagen depende de las necesidades específicas del proyecto o aplicación. Sin embargo, aquí hay algunos ejemplos de paquetes comunes que se incluyen en las imágenes de Yocto Project:
+
+Utilidades del sistema: Las imágenes de Yocto Project suelen incluir una variedad de utilidades del sistema, como bash, busybox, coreutils, etc. Estos paquetes proporcionan herramientas y comandos básicos que se utilizan en la administración del sistema.
+
+Controladores de dispositivos: Los controladores de dispositivos son esenciales para garantizar que los dispositivos de hardware se integren y funcionen correctamente en el sistema. Las imágenes de Yocto Project suelen incluir controladores de dispositivos para los componentes de hardware comunes, como Ethernet, Wi-Fi, audio, video, etc.
+
+Herramientas de red: Las imágenes de Yocto Project también suelen incluir herramientas de red como iproute2, iptables, dhcp-client, etc. Estas herramientas son útiles para la configuración y el mantenimiento de la red.
+
+Herramientas de desarrollo: Si el sistema incluye un entorno de desarrollo, las imágenes de Yocto Project también pueden incluir herramientas de desarrollo como gcc, make, gdb, etc.
+
+Aplicaciones específicas: Finalmente, las imágenes de Yocto Project pueden incluir aplicaciones específicas según las necesidades del proyecto. Por ejemplo, si el proyecto es una aplicación de IoT, la imagen puede incluir herramientas y bibliotecas para la gestión de sensores y dispositivos IoT.
+
+Es importante tener en cuenta que estos son solo ejemplos y que la selección de paquetes dependerá de las necesidades específicas del proyecto.
