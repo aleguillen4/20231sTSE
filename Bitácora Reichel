@@ -1,0 +1,13 @@
+Hacer imagen minima 
+Al instalar paquetes surgieron varios errores
+1. linux-libc-dev, se solucionó con " sudo apt-get update" para actualizar la lista de paquetes disponibles en el repositorio y luego intentar volver a instalar el paquete
+2. Que no están instaladas las variables de entorno "PATH".
+Estas herramientas son "chrpath", "diffstat", "make", "pzstd" y "zstd" , 
+se verificó que estuvieran en el con echo $PATH, 
+unas se solucionaron con " sudo apt-get update", 
+y make se solucionó con descargando el make desde wget https://ftp.gnu.org/gnu/make/make-<VERSION>.tar.gz, 
+se descomprimió con tar -xvzf make-<VERSION>.tar.gz,
+y se fue a la dirección con cd make-<VERSION>, 
+se instaló con  ./configure  make  sudo make install 
+Se verificó la instalación con make --version
+La versión es la 3.7
