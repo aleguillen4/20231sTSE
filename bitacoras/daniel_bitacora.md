@@ -128,8 +128,8 @@ Empieza el juego
 Descargar a la par de la carpta poky los siguiente: 
 
 ```
-git clone
-git clone
+git clone -b langdale https://github.com/openembedded/meta-openembedded.git
+git clone -b langdale git://github.com/openembedded/openembedded-core.git
 ```
 
 Incluir los layers que se acaban de descarga en el `conf/bblayers.conf`
