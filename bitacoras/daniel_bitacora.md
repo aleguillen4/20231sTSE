@@ -121,6 +121,62 @@ El cual puede tener otro nombre según la base de imagen  que se utilice o el la
 
 Este archivo, se supone funciona en virtual box pero Daniel tiene problemas para correr virtual box por un problema con el kernel, o algún problema de virtualización en la bios. Se pasa a Rachel la tarea de momento.
 
+#Domingo 26 y Lunes 27 de marzo
+
+Empieza el juego
+
+Descargar a la par de la carpta poky los siguiente: 
+
+```
+git clone
+git clone
+```
+
+Incluir los layers que se acaban de descarga en el `conf/bblayers.conf`
+
+```
+# POKY_BBLAYERS_CONF_VERSION is increased each time build/conf/bblayers.conf
+# changes incompatibly
+POKY_BBLAYERS_CONF_VERSION = "2"
+
+BBPATH = "${TOPDIR}"
+BBFILES ?= ""
+
+BBLAYERS ?= " \
+  /home/daniel/yocto/poky/meta-poky \
+  /home/daniel/yocto/poky/meta-yocto-bsp \
+  /home/daniel/yocto/openembedded-core/meta\ 
+ /home/daniel/yocto/sato/meta-gst \
+    /home/daniel/yocto/meta-openembedded/meta-multimedia \
+  /home/daniel/yocto/meta-openembedded/meta-perl \
+ /home/daniel/yocto/meta-openembedded/meta-python \
+/home/daniel/yocto/meta-openembedded/meta-xfce \
+/home/daniel/yocto/meta-openembedded/meta-initramfs \
+/home/daniel/yocto/meta-openembedded/meta-networking \
+/home/daniel/yocto/meta-openembedded/meta-oe \
+/home/daniel/yocto/meta-openembedded/meta-gnome \
+/home/daniel/yocto/meta-openembedded/meta-filesystems \
+"
+```
 
 
+Note que se elimino poky/meta pues da errores de cosas repetidas con meta openembedded-core/meta creo
+
+Según chatGPT las cosas que están en estos layers no se instalan en la image, hay que poner los paquetes también en el local.conf -> esperando verificar esto pronto
+
+Lo que se añadió al `local.conf`
+
+```
+IMAGE_FSTYPES += "wic.vmdk"
+IMAGE_INSTALL+=" psplash dropbear vim git python3 gstreamer1.0-python gstreamer1.0 gstreamer1.0-libav gstreamer1.0-meta-base gstreamer1.0-omx gstreamer1.0-plugins-bad gstreamer1.0-plugins-base gstreamer1.0-plugins-good gstreamer1.0-plugins-ugly gstreamer1.0-python gstreamer1.0-rtsp-server gstreamer1.0-vaapi"
+
+MACHINE_FEATURES +=" ethernet"
+
+LICENSE_FLAGS_ACCEPTED="commercial"
+
+```
+
+Note que se incluye la líne apara los archvios vmdk, no sé si añadirla dos veces sea problema, pero si ya la puso no creo que sea necesario.
+
+Actualmente corriento el bitbake con los cambios recientes en el local.conf que se acaban de explicar y con la esperanza de que funciona el pipeline de video streaming por la red en el x11, el cual no funcionó en sato
 
