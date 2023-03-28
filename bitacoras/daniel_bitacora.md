@@ -146,37 +146,54 @@ BBLAYERS ?= " \
   /home/daniel/yocto/poky/meta-poky \
   /home/daniel/yocto/poky/meta-yocto-bsp \
   /home/daniel/yocto/openembedded-core/meta\ 
- /home/daniel/yocto/sato/meta-gst \
-    /home/daniel/yocto/meta-openembedded/meta-multimedia \
+  /home/daniel/yocto/sato/meta-gst \
+  /home/daniel/yocto/meta-openembedded/meta-multimedia \
   /home/daniel/yocto/meta-openembedded/meta-perl \
- /home/daniel/yocto/meta-openembedded/meta-python \
-/home/daniel/yocto/meta-openembedded/meta-xfce \
-/home/daniel/yocto/meta-openembedded/meta-initramfs \
-/home/daniel/yocto/meta-openembedded/meta-networking \
-/home/daniel/yocto/meta-openembedded/meta-oe \
-/home/daniel/yocto/meta-openembedded/meta-gnome \
-/home/daniel/yocto/meta-openembedded/meta-filesystems \
+  /home/daniel/yocto/meta-openembedded/meta-python \
+  /home/daniel/yocto/meta-openembedded/meta-xfce \
+  /home/daniel/yocto/meta-openembedded/meta-initramfs \
+  /home/daniel/yocto/meta-openembedded/meta-networking \
+  /home/daniel/yocto/meta-openembedded/meta-oe \
+  /home/daniel/yocto/meta-openembedded/meta-gnome \
+  /home/daniel/yocto/meta-openembedded/meta-filesystems \
 "
 ```
 
 
 Note que se elimino poky/meta pues da errores de cosas repetidas con meta openembedded-core/meta creo
 
-Según chatGPT las cosas que están en estos layers no se instalan en la image, hay que poner los paquetes también en el local.conf -> esperando verificar esto pronto
+Según chatGPT las cosas que están en estos layers no se instalan en la imagen, hay que poner los paquetes también en el local.conf. Lo cual se hizo y se logró obtener las funcionalidades deseadas en la imagen.
 
 Lo que se añadió al `local.conf`
 
 ```
 IMAGE_FSTYPES += "wic.vmdk"
-IMAGE_INSTALL+=" psplash dropbear vim git python3 gstreamer1.0-python gstreamer1.0 gstreamer1.0-libav gstreamer1.0-meta-base gstreamer1.0-omx gstreamer1.0-plugins-bad gstreamer1.0-plugins-base gstreamer1.0-plugins-good gstreamer1.0-plugins-ugly gstreamer1.0-python gstreamer1.0-rtsp-server gstreamer1.0-vaapi"
+IMAGE_INSTALL+="python3-pygobject netplan inetutils tree apt  psplash dropbear vim git python3 gstreamer1.0-python gstreamer1.0 gstreamer1.0-libav gstreamer1.0-meta-base gstreamer1.0-omx gstreamer1.0-plugins-bad gstreamer1.0-plugins-base gstreamer1.0-plugins-good gstreamer1.0-plugins-ugly gstreamer1.0-python gstreamer1.0-rtsp-server gstreamer1.0-vaapi"
 
 MACHINE_FEATURES +=" ethernet"
 
 LICENSE_FLAGS_ACCEPTED="commercial"
 
+IMAGE_INSTALL +="iproute2"
+
 ```
 
-Note que se incluye la líne apara los archvios vmdk, no sé si añadirla dos veces sea problema, pero si ya la puso no creo que sea necesario.
+Note que se incluye la línea para los archivos .vmdk, no sé si añadirla dos veces sea problema, pero si ya la puso no creo que sea necesario.
 
-Actualmente corriento el bitbake con los cambios recientes en el local.conf que se acaban de explicar y con la esperanza de que funciona el pipeline de video streaming por la red en el x11, el cual no funcionó en sato
+Actualmente corriento el bitbake con los cambios recientes en el local.conf que se acaban de explicar y con la esperanza de que funciona el pipeline de video streaming por la red en el x11, el cual no funcionó en sato.
+
+Tras mucha investigación e intentos se logró correr un pipeline sencillo recibidor de video en la image x11. Se muestran los pasos para lograr esto en virtual box y la image. Este proceso no es en yocto, aunque se añadieron algunas cosas al local.conf de networking y/o redes que no sabemos realmente si hayan servido o no, pero las dejamos ahí por si acaso.
+
+Paso 1: Ajustar la configuración adecuada en el virtual box para que nuestra máquina virtual pueda ser vista con una ip propia en la red.
+
+Ir a configuración(settings) -> redes(network) -> hace el adaptador 1 bridge adapter
+
+Paso 2: Una vez encedida la vm en virtual box, correr los siguientes comandos:
+
+```
+ifconfig eth0 up
+udhcpc -i eth0
+```
+
+Luego de esto debería aparecer una ip que puede utilizar para hacer `ping` la vm desde su host si desea comprobar que se puede enviar información del host a la vm.
 
