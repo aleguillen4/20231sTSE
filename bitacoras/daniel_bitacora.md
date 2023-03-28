@@ -121,18 +121,18 @@ El cual puede tener otro nombre según la base de imagen  que se utilice o el la
 
 Este archivo, se supone funciona en virtual box pero Daniel tiene problemas para correr virtual box por un problema con el kernel, o algún problema de virtualización en la bios. Se pasa a Rachel la tarea de momento.
 
-#Domingo 26 y Lunes 27 de marzo
+# Domingo 26 y Lunes 27 de marzo
 
 Empieza el juego
 
-Descargar a la par de la carpta poky los siguiente: 
+Descargar a la par de la carpeta poky los siguientes repos: 
 
 ```
 git clone -b langdale https://github.com/openembedded/meta-openembedded.git
 git clone -b langdale https://github.com/openembedded/openembedded-core.git
 ```
 
-Incluir los layers que se acaban de descarga en el `conf/bblayers.conf`
+Incluir los layers que se acaban de descargar en el `conf/bblayers.conf`
 
 ```
 # POKY_BBLAYERS_CONF_VERSION is increased each time build/conf/bblayers.conf
@@ -146,7 +146,6 @@ BBLAYERS ?= " \
   /home/daniel/yocto/poky/meta-poky \
   /home/daniel/yocto/poky/meta-yocto-bsp \
   /home/daniel/yocto/openembedded-core/meta\ 
-  /home/daniel/yocto/sato/meta-gst \
   /home/daniel/yocto/meta-openembedded/meta-multimedia \
   /home/daniel/yocto/meta-openembedded/meta-perl \
   /home/daniel/yocto/meta-openembedded/meta-python \
@@ -160,7 +159,7 @@ BBLAYERS ?= " \
 ```
 
 
-Note que se elimino poky/meta pues da errores de cosas repetidas con meta openembedded-core/meta creo
+Note que se elimino poky/meta pues da errores de cosas repetidas con meta openembedded-core/meta creo.
 
 Según chatGPT las cosas que están en estos layers no se instalan en la imagen, hay que poner los paquetes también en el local.conf. Lo cual se hizo y se logró obtener las funcionalidades deseadas en la imagen.
 
@@ -178,17 +177,29 @@ IMAGE_INSTALL +="iproute2"
 
 ```
 
+
 Note que se incluye la línea para los archivos .vmdk, no sé si añadirla dos veces sea problema, pero si ya la puso no creo que sea necesario.
 
 Actualmente corriento el bitbake con los cambios recientes en el local.conf que se acaban de explicar y con la esperanza de que funciona el pipeline de video streaming por la red en el x11, el cual no funcionó en sato.
 
-Tras mucha investigación e intentos se logró correr un pipeline sencillo recibidor de video en la image x11. Se muestran los pasos para lograr esto en virtual box y la image. Este proceso no es en yocto, aunque se añadieron algunas cosas al local.conf de networking y/o redes que no sabemos realmente si hayan servido o no, pero las dejamos ahí por si acaso.
+### Correr el bitbake de x11
+
+`bitbake core-image-x11`
+
+### Asuntos de red
+
+Tras mucha investigación e intentos se logró correr un pipeline sencillo recibidor de video en la image x11. Se muestran los pasos para lograr esto en virtual box y la imagen. Este proceso no es en yocto, aunque se añadieron algunas cosas al local.conf de networking y/o redes que no sabemos realmente si hayan servido o no, pero las dejamos ahí por si acaso.
 
 Paso 1: Ajustar la configuración adecuada en el virtual box para que nuestra máquina virtual pueda ser vista con una ip propia en la red.
 
-Ir a configuración(settings) -> redes(network) -> hace el adaptador 1 bridge adapter
+Ir a configuración(settings) -> redes(network) -> hacer el adaptador 1 bridge adapter
+No parece ser necesario, pero puede añadir en advanced -> cambiar deny por allow all
 
-Paso 2: Una vez encedida la vm en virtual box, correr los siguientes comandos:
+Paso 2: Una vez encendida la vm en virtual box, correr los siguientes comandos:
+
+# OJO, al parecer estas dos líneas debe ponerlas en 1 script(red.sh) bash y correr el script con `bash red.sh`
+
+Si corre línea por línea no funciona como se espera.
 
 ```
 ifconfig eth0 up
