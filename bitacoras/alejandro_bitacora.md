@@ -3,15 +3,6 @@
 ### 6 de Marzo
 
 Se crea el repositorio en GitHub para el control de versiones del proyecto
-```
-gst-launch-1.0 -v autoaudiosrc ! audioconvert ! audioresample \
-! audio/x-raw, rate=16000, channels=1, format=S16LE ! audiomixer \
-! udpsink host=224.1.1.1 port=5000 `
-```
-
-```
-gst-launch-1.0 -v udpsrc multicast-group=224.1.1.1 auto-multicast=true port=5000 ! rawaudioparse use-sink-caps=false format=pcm pcm-format=s16le sample-rate=16000 num-channels=1 ! queue ! audioconvert ! audioresample ! autoaudiosink
-```
 
 ## 15 de Marzo
 Primeros esfuerzos para la integración del pipeline desarrollado por Daniel a una interfaz gráfica. 
@@ -111,3 +102,19 @@ if __name__ == "__main__":
     Gtk.main()
 ```
 
+## 24 de Marzo
+Se vuelve a intentar una interfaz gráfica basada en el código que existe en gstreamer https://gstreamer.freedesktop.org/documentation/tutorials/basic/toolkit-integration.html
+Este código se encuentra en C, la idea inicial es traspasar el código a python con la finalidad de ser modificado para obtener una interfaz gráfica donde se integre el video y diferentes botones. 
+Los avances se pueden observar en el python testingpy/basic-tutorial5.py
+A pesar de avanzar en la transcripción del código, se opta por priorizar la integración del script a Yocto. 
+
+## 29 de Marzo
+Se deciden los códigos "finales" para la implementación en la imgen mínima.
+script2/video_audio_sender.py
+script2/mute5.py
+
+Luego de esto se desarrolla un nuevo pipeline en el que se utilizan plug ins de OpenCV para detectar movimiento. 
+
+```
+           "udpsrc multicast-group=224.1.1.1 auto-multicast=true port=5001 ! application/x-rtp ! rtph264depay ! h264parse ! queue ! decodebin ! videoconvert ! cvtracker object-initial-x=175 object-initial-y=40 object-initial-width=300 object-initial-height=150 algorithm=1 ! videoconvert ! xvimagesink"
+```
