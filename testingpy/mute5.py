@@ -1,5 +1,5 @@
 import gi
-
+import cv2
 gi.require_version("Gst", "1.0")
 gi.require_version("Gtk", "3.0")
 
@@ -27,8 +27,14 @@ class ZoomGUI:
         self.window.add(self.main_box)
         self.window.show_all()
         self.pipeline_video = Gst.parse_launch(
-            "udpsrc multicast-group=224.1.1.1 auto-multicast=true port=5001 ! application/x-rtp ! rtph264depay ! h264parse ! queue ! decodebin ! videoconvert ! autovideosink"
+            "udpsrc multicast-group=224.1.1.1 auto-multicast=true port=5001 ! application/x-rtp ! rtph264depay ! h264parse ! queue ! decodebin ! videoconvert ! cvtracker object-initial-x=175 object-initial-y=40 object-initial-width=300 object-initial-height=150 algorithm=1 ! videoconvert ! xvimagesink"
            )
+        """
+        self.pipeline_video = Gst.parse_launch(
+            "udpsrc multicast-group=224.1.1.1 auto-multicast=true port=5001 ! application/x-rtp ! rtph264depay ! h264parse ! queue ! decodebin ! videoconvert ! cvtracker box-x=50 box-y=50 box-wdith=50 box-height=50 ! videoconvert ! xvimagesink"
+        )
+
+        """
         self.pipeline_audio = Gst.parse_launch(
             "udpsrc multicast-group=224.1.1.1 auto-multicast=true port=5000 ! rawaudioparse use-sink-caps=false format=pcm pcm-format=s16le sample-rate=16000 num-channels=1 ! queue ! audioconvert ! audioresample ! autoaudiosink"
            )
@@ -46,6 +52,7 @@ class ZoomGUI:
         self.mute_button.connect("clicked", self.toggle_unmute)
         
     def toggle_unmute(self, button):
+        self.pipeline_audio.set_state(Gst.State.NULL)  # reset the state
         self.pipeline_audio.set_state(Gst.State.PLAYING)
         self.mute_button.set_label("Mute")
         self.mute_button.disconnect_by_func(self.toggle_unmute)
