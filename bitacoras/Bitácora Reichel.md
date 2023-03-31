@@ -266,7 +266,7 @@ do_install() {
 
 }
 ```
-Cada maquina tiene su propip md5, para poder encontrar el númeor exacto se debe correr el siguiente comando :
+Cada maquina tiene su propip md5, para poder encontrar el número exacto se debe correr el siguiente comando :
 
 ```
 cd poky
@@ -277,30 +277,30 @@ md5sum COPYING.MIT
 Una vez que se corrió esto se muestra un numero el cual se va colocar en el md5= de la receta o .bb
 
 
+## Domingo 26 de Marzo
 
-#### Uso de la imagen en virtual box
-
-Se intenta generar un archivo .vmdk del proyecto de yocto, que funciona en virtual box. Para esto se añade al archivo buildgst/conf/local.conf
+	Para poder usar la imagen en virtual box se debe generar un archivo de la imagen .vmdk, este se encuentra en la build/tmp/deploy/images/qemux86-64, el cual tenía el nombre `core-image-x11-qemux86-64.wic.vmdk`
+	
+Para poder generarlo se añade al archivo build/conf/local.conf
 
 La línea: `IMAGE_FSTYPES += "wic.vmdk"`
+	
+El cual debido a que estoy usando azure lo pasé con un comando que nos enseñaron en el minitaller 
+	
+```
+	/home/reimorales/poky/build/tmp/deploy/images/qemux86-64/core-image-x11-qemux86-64.wic.vmdk /Users\Rachell\Documents\Documents\TEC\"I Semestre 2023"\Embebidos\"Proyecto 1"\"Virtual box"
+	
+ ```
+	
+ Este se agrega la sección de disco existente a la hora de crear la maquina virtual, sale como EXisting virtual hard Disk File, entonces hay que marcarlo.
 
-Con esto se  genera en la carpeta: `/buildgst/tmp/deploy/images/qemux86-64`
-Un archivo: `layergst-image-qemux86-64-20230320030721.rootfs.wic.vmdk`
-El cual puede tener otro nombre según la base de imagen  que se utilice o el layer creado.
-
-Este archivo, se supone funciona en virtual box pero Daniel tiene problemas para correr virtual box por un problema con el kernel, o algún problema de virtualización en la bios. Se pasa a Rachel la tarea de momento.
-
-# Domingo 26 y Lunes 27 de marzo
-
-Empieza el juego
-
-Descargar a la par de la carpeta poky los siguientes repos: 
-
+	Empezamos a crear la imagen con `bitbake core-image-x11`, ya que con este bitbake podemos usar con mayor facilidad las herramientas gráficas, primero clonamos unos repos, a la par de carpeta poky:
+	
 ```
 git clone -b langdale https://github.com/openembedded/meta-openembedded.git
 git clone -b langdale https://github.com/openembedded/openembedded-core.git
 ```
-
+	
 Incluir los layers que se acaban de descargar en el `conf/bblayers.conf`
 
 ```
@@ -312,23 +312,23 @@ BBPATH = "${TOPDIR}"
 BBFILES ?= ""
 
 BBLAYERS ?= " \
-  /home/daniel/yocto/poky/meta-poky \
-  /home/daniel/yocto/poky/meta-yocto-bsp \
-  /home/daniel/yocto/openembedded-core/meta\ 
-  /home/daniel/yocto/meta-openembedded/meta-multimedia \
-  /home/daniel/yocto/meta-openembedded/meta-perl \
-  /home/daniel/yocto/meta-openembedded/meta-python \
-  /home/daniel/yocto/meta-openembedded/meta-xfce \
-  /home/daniel/yocto/meta-openembedded/meta-initramfs \
-  /home/daniel/yocto/meta-openembedded/meta-networking \
-  /home/daniel/yocto/meta-openembedded/meta-oe \
-  /home/daniel/yocto/meta-openembedded/meta-gnome \
-  /home/daniel/yocto/meta-openembedded/meta-filesystems \
-"
+  /home/reimorales/poky/meta-poky \
+  /home/reimorales/poky/meta-yocto-bsp \
+  /home/reimorales/openembedded-core/meta \
+  /home/reimorales/meta-openembedded/meta-multimedia \
+  /home/reimorales/meta-openembedded/meta-perl \
+  /home/reimorales/meta-openembedded/meta-python \
+  /home/reimorales/meta-openembedded/meta-xfce \
+  /home/reimorales/meta-openembedded/meta-initramfs \
+  /home/reimorales/meta-openembedded/meta-networking \
+  /home/reimorales/meta-openembedded/meta-oe \
+  /home/reimorales/meta-openembedded/meta-gnome \
+  /home/reimorales/meta-openembedded/meta-filesystems \
+  /home/reimorales/poky/build/meta-newlayer \
+  "
+
 ```
-
-
-Note que se elimino poky/meta pues da errores de cosas repetidas con meta openembedded-core/meta creo.
+Se elimino poky/meta porque d errores de archivos repetidos con meta openembedded-core/meta.
 
 Según chatGPT las cosas que están en estos layers no se instalan en la imagen, hay que poner los paquetes también en el local.conf. Lo cual se hizo y se logró obtener las funcionalidades deseadas en la imagen.
 
@@ -345,15 +345,15 @@ LICENSE_FLAGS_ACCEPTED="commercial"
 IMAGE_INSTALL +="iproute2"
 
 ```
+La imagen corrió bien y se probó un archivo hola.py, de hola Mundo
+	
+## Lunes 27 de Marzo
 
-
-Note que se incluye la línea para los archivos .vmdk, no sé si añadirla dos veces sea problema, pero si ya la puso no creo que sea necesario.
-
-Actualmente corriento el bitbake con los cambios recientes en el local.conf que se acaban de explicar y con la esperanza de que funciona el pipeline de video streaming por la red en el x11, el cual no funcionó en sato.
-
-### Correr el bitbake de x11
-
-`bitbake core-image-x11`
+	Se agregan los archivos de la aplicación `mute5.py`, `video_audio_sender.py `, esto se prueba y se logra correr en el virtual box, más sin embargo no tira la ventana de la cámara
+	
+	Para poder cargar todos los archivos a la imagen de virtual box se debe correr `cd /usr/bin`, una vez cargados se debe correr como `python3 nombre del archivo `
+	
+## Lunes 27 de Marzo
 
 ### Asuntos de red
 
