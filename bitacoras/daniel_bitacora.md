@@ -208,3 +208,14 @@ udhcpc -i eth0
 
 Luego de esto debería aparecer una ip que puede utilizar para hacer `ping` la vm desde su host si desea comprobar que se puede enviar información del host a la vm.
 
+### Miercoles y Jueves 29 y 31 de marzo
+
+Se realiza investigación mínima sobre audio, para intentar reproducir el pipeline de básico de prueba de gstreamer dentro de virtual box, pues el mismo correr pero no se logra escuchar nada, se muestra el pipeline:
+
+`gst-launch-1.0 audiotestsrc ! audioconvert ! autoaudiosink`
+
+Se realiza investigación tratando de apoyar a Rachel pues Daniel se quedo sin computadora...
+Se realiza investigación sobre otros errores obtenidos con la imagen y los programas implementados.
+Se trabaja añadiendo a nuestro documento guía en un overleaf,  explicaciones sobre yocto y pipelines de gstreamer entre otras explicaciones sobre el trabajo desarrollado.
+
+
