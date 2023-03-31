@@ -1,5 +1,42 @@
 # Reichel Morales Sánchez - Taller de embebidos
 
+### Lunes 27 de Febrero
+
+Se instala Yocto y se crea la primera imagen minima. 
+Para la instalación de Yoctoc se deben usar el siguiente comando:
+
+```
+$ sudo apt install gawk wget git diffstat unzip texinfo gcc build-essential chrpath socat cpio python3 python3-pip python3-pexpect xz-utils debianutils iputils-ping python3-git python3-jinja2 libegl1-mesa libsdl1.2-dev pylint3 xterm python3-subunit mesa-common-dev zstd liblz4-tool
+
+```
+Se debe clonar el archivo de poky.
+
+```
+$ git clone git://git.yoctoproject.org/poky
+$ cd poky
+
+```
+Tenemos que definir el entorno cada vez que vayamos a construir una  imagen, y eso se realiza con el siguiente comando:
+```
+$ source oe-init-build-env
+```
+Debemos ir al conf/local.conf y quirale el comentario a las siguinetes lineas, para acelerar y evitar errores
+```
+BB_SIGNATURE_HANDLER = "OEEquivHash"
+BB_HASHSERVE = "auto"
+BB_HASHSERVE_UPSTREAM = "hashserv.yocto.io:8687"
+SSTATE_MIRRORS ?= "file://.* https://sstate.yoctoproject.org/all/PATH;downloadfilename=PATH"
+```
+Se debe tomar en cuenta que el Machine que debe tenerse es el qemux86-64
+
+Una vez modificado el local.conf, se procede a construir la imagen, con el siguiente comando:
+```
+$ bitbake core-image-sato
+```
+Para simular la imagen en se utiliza QEMU, este es un emulador, tener en cuenta que para salir de este se usa ctrl-c.
+```
+$ runqemu qemux86-64
+```
 ### Miercoles 1 de marzo
 
 Se realizan varias pruebas con Gstreamer se logra realizar un sistema de envío de audio por la red, utilizando `gstremaer-launch-1.0` se muestra el pipeline que envía audio y el recibidor:
