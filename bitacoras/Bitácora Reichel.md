@@ -31,12 +31,30 @@ Se debe tomar en cuenta que el Machine que debe tenerse es el qemux86-64
 
 Una vez modificado el local.conf, se procede a construir la imagen, con el siguiente comando:
 ```
-$ bitbake core-image-sato
+$  bitbake -k core-image-minimal
 ```
 Para simular la imagen en se utiliza QEMU, este es un emulador, tener en cuenta que para salir de este se usa ctrl-c.
 ```
 $ runqemu qemux86-64
 ```
+Al instalar los paquetes surgieron varios errores:
+
+1.Con el paquete linux-libc-dev, se solucionó con " sudo apt-get update" para actualizar la lista de paquetes disponibles en el repositorio y luego intentar volver a instalar el paquete
+2. También que no estaban instaladas las variables de entorno "PATH".
+Estas herramientas son "chrpath", "diffstat", "make", "pzstd" y "zstd" , 
+se verificó que estuvieran en el con echo $PATH, 
+unas se solucionaron con " sudo apt-get update", 
+y make se solucionó con descargando el make desde 
+```
+wget https://ftp.gnu.org/gnu/make/make-<VERSION>.tar.gz, 
+
+```
+se descomprimió con tar -xvzf make-<VERSION>.tar.gz,
+y se fue a la dirección con cd make-<VERSION>, 
+se instaló con  ./configure  make  sudo make install 
+Se verificó la instalación con make --version
+La versión es la 3.7
+
 ### Miercoles 1 de marzo
 
 Se realizan varias pruebas con Gstreamer se logra realizar un sistema de envío de audio por la red, utilizando `gstremaer-launch-1.0` se muestra el pipeline que envía audio y el recibidor:
