@@ -20,6 +20,7 @@ Se intenta unificar el enviador de audio con  el enviador de video(proporcionado
 
 Se muestra el código para el sender, se logra correr en dos terminales separadas en 1 misma computadora.
 
+Se basa en la siguiente guía/referencia para lo mismo:[sunhacks_2020_gstreamer_talk.md](https://gist.github.com/velovix/8cbb9bb7fe86a08fb5aa7909b2950259)
 ```
 from time import sleep
 from threading import Thread
@@ -55,7 +56,6 @@ main_loop.quit()
 
 # Como se puede ver, simplemente se conectó otro pipeline en paralelo que se encarga del envío de audio. 
 
-Para el pipeline de video, baso en el mismo proporcionado por RidgeRun en el taller de Gstreamer, para lograr ejecutar pipelines de Gstreamer en python se baso en esta referencia: [sunhacks_2020_gstreamer_talk.md](https://gist.github.com/velovix/8cbb9bb7fe86a08fb5aa7909b2950259)
 
 ## Sabado 18 de marzo
 
