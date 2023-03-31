@@ -210,7 +210,7 @@ Luego de esto debería aparecer una ip que puede utilizar para hacer `ping` la v
 
 ### Miercoles y Jueves 29 y 31 de marzo
 
-Se realiza investigación mínima sobre audio, para intentar reproducir el pipeline de básico de prueba de gstreamer dentro de virtual box, pues el mismo correr pero no se logra escuchar nada, se muestra el pipeline:
+Se realiza investigación mínima sobre audio, para intentar reproducir el pipeline básico de prueba de gstreamer dentro de virtual box, pues el mismo corre pero no se logra escuchar nada, se muestra el pipeline:
 
 `gst-launch-1.0 audiotestsrc ! audioconvert ! autoaudiosink`
 
