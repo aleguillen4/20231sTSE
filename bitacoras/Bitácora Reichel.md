@@ -242,6 +242,41 @@ mkdir files
     └── example
        └── example_0.1.bb
 ```
+Para probar se crea un archivo pyhon con un hola mundo 
+
+```
+vim hola.py
+
+```
+Para editar el archivo se usa i , y para salirse se utiliza esc y se escribe :wq
+
+Ahora una vez creado, nos vamos al .bb, y se modifica la receta a esto :
+
+```
+SUMMARY = "bitbake-layers recipe"
+DESCRIPTION = "Recipe created by bitbake-layers"
+LICENSE = "MIT"
+LIC_FILES_CHKSUM = "file://COPYING.MIT;md5=    "
+SRC_URI = "file://hola.py "
+
+inherit python3native
+do_install() {
+	install -d ${D}${bindir}
+	install -m 0755 hola.py ${D}${bindir}
+
+}
+```
+Cada maquina tiene su propip md5, para poder encontrar el númeor exacto se debe correr el siguiente comando :
+
+```
+cd poky
+cd build cd 
+cd meta-newlayers
+md5sum COPYING.MIT
+```
+Una vez que se corrió esto se muestra un numero el cual se va colocar en el md5= de la receta o .bb
+
+
 
 #### Uso de la imagen en virtual box
 
