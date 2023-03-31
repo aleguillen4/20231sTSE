@@ -39,7 +39,8 @@ $ runqemu qemux86-64
 ```
 Al instalar los paquetes surgieron varios errores:
 
-1.Con el paquete linux-libc-dev, se solucionó con " sudo apt-get update" para actualizar la lista de paquetes disponibles en el repositorio y luego intentar volver a instalar el paquete
+1.Con el paquete linux-libc-dev, se solucionó con " sudo apt-get update" para actualizar la lista de paquetes disponibles en el repositorio y luego intentar volver a instalar el paquete.
+
 2. También que no estaban instaladas las variables de entorno "PATH".
 Estas herramientas son "chrpath", "diffstat", "make", "pzstd" y "zstd" , 
 se verificó que estuvieran en el con echo $PATH, 
@@ -55,60 +56,42 @@ se instaló con  ./configure  make  sudo make install
 Se verificó la instalación con make --version
 La versión es la 3.7
 
-### Miercoles 1 de marzo
+### Domingo 12 de Marzo
 
-Se realizan varias pruebas con Gstreamer se logra realizar un sistema de envío de audio por la red, utilizando `gstremaer-launch-1.0` se muestra el pipeline que envía audio y el recibidor:
+Se intentó hacer las pruebas de audio por red que investigó Daniel:
 ```
 gst-launch-1.0 -v autoaudiosrc ! audioconvert ! audioresample \
 ! audio/x-raw, rate=16000, channels=1, format=S16LE ! audiomixer \
 ! udpsink host=224.1.1.1 port=5000 `
 ```
-
 ```
 gst-launch-1.0 -v udpsrc multicast-group=224.1.1.1 auto-multicast=true port=5000 ! rawaudioparse use-sink-caps=false format=pcm pcm-format=s16le sample-rate=16000 num-channels=1 ! queue ! audioconvert ! audioresample ! autoaudiosink
 ```
 
 
-### Jueves 16 de marzo 
+### Viernes 17 de marzo 
 
-Se intenta unificar el enviador de audio con  el enviador de video(proporcionado por RidgeRun) en la red a partir de un código de 1 pipeline en python:
+Se empieza a investigar sobre la estructura de Yocto Project y como funcionan los layers y las recetas, y se encontró la siguiente información.
 
-Se muestra el código para el sender, se logra correr en dos terminales separadas en 1 misma computadora.
+El proyecto Yocto tiene una estructura de directorios bien definida que es importante conocer para trabajar con él. A continuación, se describe brevemente cada uno de los directorios principales:
 
-```
-from time import sleep
-from threading import Thread
+build: Este directorio es donde se realiza la construcción de la imagen. Contiene los archivos de configuración de la imagen, así como los archivos generados durante el proceso de construcción.
 
-import gi
+meta: Este directorio es donde se encuentran las capas de metadatos que definen el comportamiento del sistema. Incluye metadatos para el núcleo de Linux, el sistema de inicio, los paquetes y las configuraciones.
 
-gi.require_version("Gst", "1.0")
+poky: Este directorio contiene el núcleo de Yocto, incluyendo el código fuente y los scripts necesarios para construir la imagen.
 
-from gi.repository import Gst, GLib
+downloads: Este directorio es donde se descargan los archivos necesarios para construir la imagen, como el código fuente de los paquetes y las herramientas.
 
+sstate-cache: Este directorio es donde se almacenan las versiones preconstruidas de los paquetes y las herramientas para acelerar el proceso de construcción.
 
-Gst.init()
+tmp: Este directorio contiene archivos temporales generados durante el proceso de construcción, como los archivos de objeto y los registros.
 
-main_loop = GLib.MainLoop()
-thread = Thread(target=main_loop.run)
-thread.start()
+La estructura de directorios de Yocto es altamente personalizable y puede ser adaptada a las necesidades específicas de cada proyecto. Además de los directorios mencionados anteriormente, se pueden agregar capas adicionales, que contienen metadatos personalizados, y se pueden especificar rutas de búsqueda adicionales para los archivos necesarios para la construcción.
 
-pipeline_video = Gst.parse_launch("v4l2src ! videoconvert ! x264enc speed-preset=ultrafast key-int-max=30 tune=zerolatency ! h264parse ! rtph264pay config-interval=-1 ! udpsink host=224.1.1.1 port=5001 auto-multicast=true sync=false")
-pipeline_audio = Gst.parse_launch("autoaudiosrc ! audioconvert ! audioresample ! audio/x-raw, rate=16000, channels=1, format=S16LE ! audiomixer ! udpsink host=224.1.1.1 port=5000")
-pipeline_video.set_state(Gst.State.PLAYING)
-
-pipeline_audio.set_state(Gst.State.PLAYING)
-
-try:
-    while True:
-        sleep(0.1)
-except KeyboardInterrupt:
-    pass
-pipeline_video.set_state(Gst.State.NULL)
-pipeline_audio.set_state(Gst.State.NULL)
-main_loop.quit()
-```
-
-# Como se puede ver, simplemente se conectó otro pipeline en paralelo que se encarga del envío de audio. 
+ Fuente: https://docs.yoctoproject.org/current/ref-manual/index.html
+ 
+ 
 
 ## Sabado 18 de marzo
 
