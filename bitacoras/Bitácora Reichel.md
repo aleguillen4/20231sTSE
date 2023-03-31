@@ -68,7 +68,6 @@ gst-launch-1.0 -v autoaudiosrc ! audioconvert ! audioresample \
 gst-launch-1.0 -v udpsrc multicast-group=224.1.1.1 auto-multicast=true port=5000 ! rawaudioparse use-sink-caps=false format=pcm pcm-format=s16le sample-rate=16000 num-channels=1 ! queue ! audioconvert ! audioresample ! autoaudiosink
 ```
 
-
 ### Viernes 17 de marzo 
 
 Se empieza a investigar sobre la estructura de Yocto Project y como funcionan los layers y las recetas, y se encontró la siguiente información.
@@ -91,61 +90,158 @@ La estructura de directorios de Yocto es altamente personalizable y puede ser ad
 
  Fuente: https://docs.yoctoproject.org/current/ref-manual/index.html
  
+Existen varios conjuntos de herramientas para Yoctoc Proyect que dependen de las necesidades y requisitos del proyecto según ChatGPT, y hay unos especificos para audio.
+
+GCC: GNU Compiler Collection es un conjunto de compiladores y herramientas de programación que es compatible con una amplia variedad de plataformas y arquitecturas.
+
+Clang/LLVM: Clang es un compilador de C/C++ que utiliza la infraestructura LLVM para compilar código fuente. LLVM también proporciona herramientas adicionales como el analizador estático de código y el optimizador de código.
+
+Intel C++ Compiler: El compilador C++ de Intel es un conjunto de herramientas de desarrollo que proporciona un conjunto completo de características de optimización y es compatible con plataformas Intel x86.
+
+OpenEmbedded Build System: OpenEmbedded es un sistema de compilación automatizado que se utiliza junto con Yocto Project. Incluye una variedad de herramientas de compilación y scripts de automatización que permiten compilar y crear imágenes de sistema operativo personalizadas.
+
+Buildroot: Buildroot es un sistema de compilación basado en make que se utiliza para crear sistemas operativos embebidos pequeños y ligeros.
+
+CMake: CMake es una herramienta de construcción de código abierto que se utiliza para controlar el proceso de compilación de aplicaciones.
+
+En general, Yocto Project es una herramienta de construcción muy flexible que permite a los desarrolladores elegir y personalizar el conjunto de herramientas que se utilizarán en sus proyectos, según sus necesidades y requisitos específicos.
+ 
+Los paquetes de herramientas que son para audio y video son:
+
+GStreamer: GStreamer es un marco de trabajo de procesamiento multimedia que permite la creación de flujos de trabajo para el procesamiento de audio y video. GStreamer está disponible como un conjunto de herramientas en Yocto Project y se puede utilizar para crear aplicaciones de multimedia personalizadas.
+
+FFmpeg: FFmpeg es una biblioteca de software libre que se utiliza para grabar, convertir y transmitir audio y video en varios formatos. FFmpeg se puede integrar fácilmente en aplicaciones multimedia en Yocto Project.
+
+ALSA: Advanced Linux Sound Architecture (ALSA) es una biblioteca de software libre que proporciona soporte para audio en Linux. ALSA proporciona controladores de dispositivos de audio para una amplia variedad de hardware de audio y se puede utilizar para crear aplicaciones de audio en Yocto Project.
+
+Jack Audio Connection Kit: Jack Audio Connection Kit es un sistema de audio profesional para Linux que permite la conexión de aplicaciones de audio y la manipulación en tiempo real de flujos de audio.
+
+OpenCV: OpenCV (Open Source Computer Vision Library) es una biblioteca de visión por computadora y procesamiento de imágenes que se puede utilizar para aplicaciones de procesamiento de video y visión artificial.
+
+Estos son solo algunos ejemplos de los conjuntos de herramientas disponibles en Yocto Project para el desarrollo de aplicaciones de audio y video. Cada conjunto de herramientas tiene sus propias características y ventajas, y la elección dependerá de las necesidades específicas del proyecto.
  
 
 ## Sabado 18 de marzo
+ 
+ ChatGPT, me hizo un mini resumen de como era una receta :
+ 
+En el contexto de Yocto Project, una receta de construcción (build recipe) es un archivo de metadatos que define cómo se debe construir y empacar un componente de software. Las recetas de construcción se utilizan para especificar las dependencias de software, la configuración de compilación, la instalación de archivos y la creación de paquetes para el componente de software.
 
+Las recetas de construcción se escriben en un lenguaje llamado BitBake, que es el sistema de compilación utilizado por Yocto Project. Una receta de construcción típica consta de varias secciones que especifican diferentes aspectos de la construcción del componente de software. Algunas de las secciones comunes incluyen:
 
-
-Se prueba lo obtenido con pipelines de gstreamer en python en dos computadoras sobre la misma red de la casa de Daniel y se logra enviar el audio y video correctamente.
-
-## Domingo 19 de marzo
-
-#### Imagen inical de yocto con  1 layer
-
-Se empieza a investigar sobre yocto y se realiza un proyecto de yocto con un primer layer.
-
-Se muestra el proyecto de yocto en la carpeta buildgst:
-
-```
-(base) daniel@daniel-Latitude-E5450:~/.../buildgst$ tree -L 1
-.
-├── bitbake-cookerdaemon.log
-├── cache
-├── conf
-├── downloads
-├── layergst
-├── sstate-cache
-└── tmp
- ```
-# En la carpeta layergst  se tiene el layer generado, donde se indica la instalación de paquetes para la imagen: 
-```
-#Add out desired packages 
-IMAGE_INSTALL+="psplash dropbear vim git python3 gstreamer1.0-python gstreamer1.0 gstreamer1.0-libav gstreamer1.0-meta-base gstreamer1.0-omx gstreamer1.0-plugins-bad gstreamer1.0-plugins-base gstreamer1.0-plugins-good gstreamer1.0-plugins-ugly gstreamer1.0-python gstreamer1.0-rtsp-server gstreamer1.0-vaapi "
-```
-Lo cual se puede ver que incluye paquetes de gstreamer, python, vim, git y otros para ir probando si funciona al utilizar qemu.
-
-Esto en el archivo layersgst/conf/recipes-core/images/layergst-image.bb
+Descripción: Información general sobre el componente de software.
+Fuentes: Dónde se pueden encontrar las fuentes del software.
+Dependencias: Lista de dependencias necesarias para construir el software.
+Configuración de compilación: Opciones de configuración para el proceso de compilación.
+Instalación: Cómo se deben instalar los archivos del software.
+Paquetización: Cómo se deben crear los paquetes para el software.
+Aquí hay un ejemplo de una receta de construcción para el paquete de software "hello-world":
 
 
 ```
-(base) daniel@daniel-Latitude-E5450:~/.../layergst$ tree -L 3
-.
+SUMMARY = "Hello World Example"
+LICENSE = "MIT"
+LIC_FILES_CHKSUM = "file://LICENSE;md5=0636e73ff0215e8d672dc4c32c317bb3"
+
+SRC_URI = "http://example.com/hello-world-1.0.tar.gz"
+SRC_URI[md5sum] = "0123456789abcdef0123456789abcdef"
+
+DEPENDS = "virtual/libc"
+
+S = "${WORKDIR}/hello-world-1.0"
+
+do_configure() {
+    ./configure --prefix=${prefix}
+}
+
+do_compile() {
+    make
+}
+
+do_install() {
+    install -d ${D}${prefix}/bin
+    install -m 0755 hello-world ${D}${prefix}/bin
+}
+
+PACKAGES = "${PN}"
+FILES_${PN} = "${prefix}/bin/hello-world"
+ 
+```
+Esta receta define a "Hello-world" , la fuente de esta receta es la siguiente : http://example.com/hello-world-1.0.tar.gz
+ 
+- La receta también especifica que el paquete depende de la biblioteca C virtual, "virtual/libc". 
+- La sección "do_configure" especifica la configuración de compilación.
+- La sección "do_compile" especifica cómo compilar el código fuente.
+- La sección "do_install" especifica cómo instalar los archivos del software en el sistema de archivos de destino.
+- La sección "PACKAGES" especifica que el paquete debe incluirse en la imagen final.
+- La sección "FILES_${PN}" especifica qué archivos deben incluirse en el paquete.
+ 
+Aun no entiendo muy bien que son las dependencias de una receta.
+
+## Miercoles 22 de Marzo
+ 
+Se investiga sobre las dependencias: 
+ 
+En Yocto Project, las dependencias se refieren a otros componentes de software que son necesarios para construir un componente de software específico. Las dependencias pueden ser bibliotecas compartidas, herramientas de compilación, paquetes de software y otros componentes necesarios para la construcción y ejecución del componente de software.
+
+Las dependencias se especifican en las recetas de construcción de Yocto Project mediante la variable "DEPENDS". Esta variable se utiliza para especificar una lista de componentes de software necesarios para construir el componente de software actual. Si una de las dependencias no está presente, el sistema de construcción de Yocto Project intentará construirla antes de continuar con el componente de software actual.
+
+Se empieza a investigar sobre como poder usar python con Yoctoc, chatGPT ofrece la siguiente información:
+ 
+Yocto Project ofrece varias herramientas para trabajar con Python. Algunas de estas herramientas incluyen:
+
+- python3: Yocto Project incluye soporte para Python 3, lo que permite a los desarrolladores escribir recetas de construcción utilizando Python 3. También se incluye una amplia gama de módulos de Python estándar y paquetes adicionales.
+
+- pip: Pip es un administrador de paquetes de Python que se utiliza para instalar y administrar paquetes adicionales de Python. Pip está disponible en Yocto Project y se puede utilizar para instalar paquetes de Python adicionales en el sistema de destino.
+
+- setuptools: Setuptools es una biblioteca de Python que se utiliza para desarrollar y distribuir paquetes de Python. Yocto Project incluye setuptools y se puede utilizar para construir y distribuir paquetes de Python personalizados.
+
+- virtualenv: Virtualenv es una herramienta que se utiliza para crear entornos virtuales de Python aislados. Esto permite a los desarrolladores instalar y trabajar con diferentes versiones de Python y diferentes paquetes de Python en el mismo sistema sin interferir con otros paquetes o versiones de Python. Yocto Project incluye virtualenv y se puede utilizar para crear entornos virtuales de Python aislados en el sistema de destino.
+
+- pyro: Pyro es un marco de trabajo de Python que se utiliza para desarrollar aplicaciones distribuidas y sistemas de middleware. Yocto Project incluye pyro y se puede utilizar para desarrollar aplicaciones distribuidas y sistemas de middleware en el sistema de destino.
+
+Estas son solo algunas de las herramientas de Python disponibles en Yocto Project. Con estas herramientas, los desarrolladores pueden trabajar con Python y construir aplicaciones de Python personalizadas para el sistema de destino.
+ 
+ Fuente: https://docs.yoctoproject.org/current/ref-manual/index.html
+
+#### Se crea una Imagen inical de yocto con  1 layer
+
+Para crear un layer primero debemos ejecutar el comando:
+ 
+```
+bitbake-layers create-layer meta-newlayer
+
+```
+Ahora esta layer va tener archivos dentro entre esos recipes-example/examples, cuando llegamos ahí solo vamos a tener un .bb qu es donde vamos a mandar a buscar los paquetes que necesitamos
+
+```
 ├── conf
 │   └── layer.conf
 ├── COPYING.MIT
 ├── README
-├── recipes-core
-│   └── images
-│       └── layergst-image.bb
-└── recipes-example
+├── recipes-example
     └── example
-        └── example_0.1.bb
+       └── example_0.1.bb
 ```
 
-Con esto se logró correr en 1 imagen utilizando el simulador qemu, gst-inspect-1.0  y gst-launch-1.0 sin embargo, no se logra captura audio ni video, tambien se logra correr pyhtom, se tiene problemas para copiar código de al qemu(no se puede). 
-También se logra corre un hola mundo en python dentro de la imagen con qemu.
+ ## Miercoles 25 de Marzo
+ 
+ Se investiga como se pueden tener los archivos de python de la aplicación , en yocto y se puedan correr.
 
+ Primero se crea un archivo llamado files, por medio del comando :
+ 
+```
+mkdir files
+```
+```
+├── conf
+│   └── layer.conf
+├── COPYING.MIT
+├── README
+├── recipes-example
+    └── example
+       └── example_0.1.bb
+```
 
 #### Uso de la imagen en virtual box
 
