@@ -276,6 +276,17 @@ md5sum COPYING.MIT
 ```
 Una vez que se corrió esto se muestra un numero el cual se va colocar en el md5= de la receta o .bb
 
+También se agregó al local. conf la receta, del example y otras más que se van utlizar
+
+IMAGE_INSTALL:append = " \
+		 example \
+		 python3-pip \
+		 python3-pygobject \
+                 vim \
+                 bash \
+                 rsync \
+                 python3-pip \
+                 "
 
 ## Domingo 26 de Marzo
 
@@ -328,7 +339,7 @@ BBLAYERS ?= " \
   "
 
 ```
-Se elimino poky/meta porque d errores de archivos repetidos con meta openembedded-core/meta.
+Se elimino poky/meta porque da errores de archivos repetidos con meta openembedded-core/meta.
 
 Según chatGPT las cosas que están en estos layers no se instalan en la imagen, hay que poner los paquetes también en el local.conf. Lo cual se hizo y se logró obtener las funcionalidades deseadas en la imagen.
 
@@ -353,26 +364,71 @@ La imagen corrió bien y se probó un archivo hola.py, de hola Mundo
 	
 	Para poder cargar todos los archivos a la imagen de virtual box se debe correr `cd /usr/bin`, una vez cargados se debe correr como `python3 nombre del archivo `
 	
-## Lunes 27 de Marzo
-
-### Asuntos de red
-
-Tras mucha investigación e intentos se logró correr un pipeline sencillo recibidor de video en la image x11. Se muestran los pasos para lograr esto en virtual box y la imagen. Este proceso no es en yocto, aunque se añadieron algunas cosas al local.conf de networking y/o redes que no sabemos realmente si hayan servido o no, pero las dejamos ahí por si acaso.
-
-Paso 1: Ajustar la configuración adecuada en el virtual box para que nuestra máquina virtual pueda ser vista con una ip propia en la red.
-
-Ir a configuración(settings) -> redes(network) -> hacer el adaptador 1 bridge adapter
-No parece ser necesario, pero puede añadir en advanced -> cambiar deny por allow all
-
-Paso 2: Una vez encendida la vm en virtual box, correr los siguientes comandos:
-
-# OJO, al parecer estas dos líneas debe ponerlas en 1 script(red.sh) bash y correr el script con `bash red.sh`
-
-Si corre línea por línea no funciona como se espera.
-
+	Descubrimos que para poder conectar la compu al virtual necesitabamos configurar la red, Daniel descubrió los siguiente comandos que yo agregué al layer con el nombre red.sh para poder hacer el bash más directo.
+	
 ```
 ifconfig eth0 up
 udhcpc -i eth0
+
+```
+También se debe configurar el virtual box,entonces se siguen los siguentes pasos:
+
+- Ir a configuración
+- Luego a Red
+- En al adaptador 1 , se escoge Bridge adapter
+- En la ventana de advanced, se cambia deny por allow all
+
+Una vez que se configure lo anterior , se corre el siguiente bash:
+
+```
+bash red.sh
+
+```	
+Aun así no nos mostraba una ventana en virtual box
+
+## Martes 28 de Marzo
+
+Se descubre que hay que cambiar el host de la progra `video_audio_sender.py ` y que redireccione la señal al virtual box, se investigó y se encontró que con el comando 
+
+```
+ifconfig
+
+```
+Fuente : ps://www.ionos.com/digitalguide/hosting/technical-matters/get-linux-ip-address/#:~:text=If%20you%20enter%20the%20command,that%20are%20in%20your%20network.
+ 
+Se encuentra el IP de virtual box, hay que tener  presente que este cambia cada vez que se inicia la maquina y se corre un nuevo bash.
+
+Con ese cambio se logró que virtual box mostrara el video en tiempo real de la red donde se estaba corriendo el `video_audio_sender.py `.
+
+Ahora tuvimos problemas con el audio en virtual box, por lo que empezamos a investigar si era un problema de la imagen o de virtual, agregando archivos que tenía el meta-openembedded clonado, las cuales fueorn las siguientes:
+
+
+```
+#DISTRO_FEATURES:append = " pulseaudio"
+
+#IMAGE_INSTALL:append = " pulseaudio pulseaudio-module-dbus-protocol pulseaudio-server pulseaudio-module-bluetooth-discover pulseaudio-module-bluetooth-policy pulseaudio-module-bluez5-device pulseaudio-module-bluez5-discover alsa-utils alsa-plugins"
+
 ```
 
-Luego de esto debería aparecer una ip que puede utilizar para hacer `ping` la vm desde su host si desea comprobar que se puede enviar información del host a la vm.
+Sin embargo se corrió  la imagen de nuevo y no funccionó , también se corrió un pipeline sencillo de Gstremear y no funcionó.
+
+```
+gst-launch-1.0 audiotestsrc ! audioconvert ! autoaudiosink
+
+```
+Deducimos que el problema no era la imagen, ni la progra, si no que virtual box por alguna razón no nos dejaba reproducir audio.
+
+## Miercoles 29 de Marzo
+
+Se piensa que no se puede usar `core-image-x11 ` y se empieza a usar `core-image-minimal`, sin embargo al ser solo una terminal se  deben crear ventanas con gestores de ventanas, el profe recomendó `imagemagick ` que esta disponible en `meta-openembedded `, por lo que se agregó a las recetas, al bblayers.conf y al local.conf, pero no generaba ninguna ventana.
+
+Fuente:https://github.com/openembedded/meta-openembedded
+
+Se consulta con el profe y se decide seguir usando el x11
+
+Se empieza la guía por medio de overleaf
+
+
+## Jueves 30 de Marzo
+
+Se trabajó en la guía, y se repasó que la imagen funcionara.
