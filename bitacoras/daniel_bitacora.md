@@ -12,7 +12,7 @@ gst-launch-1.0 -v autoaudiosrc ! audioconvert ! audioresample \
 ```
 gst-launch-1.0 -v udpsrc multicast-group=224.1.1.1 auto-multicast=true port=5000 ! rawaudioparse use-sink-caps=false format=pcm pcm-format=s16le sample-rate=16000 num-channels=1 ! queue ! audioconvert ! audioresample ! autoaudiosink
 ```
-
+Para este piepeline de audio broadcasting se baso en parte esta referencia: [gstreamer pipeline to stream raw audio over network](https://saurorja.org/2017/12/24/gstreamer-pipeline-to-stream-raw-audio-over-network/)
 
 ### Jueves 16 de marzo 
 
@@ -55,6 +55,8 @@ main_loop.quit()
 
 # Como se puede ver, simplemente se conectó otro pipeline en paralelo que se encarga del envío de audio. 
 
+Para el pipeline de video, baso en el mismo proporcionado por RidgeRun en el taller de Gstreamer, para lograr ejecutar pipelines de Gstreamer en python se baso en esta referencia: [sunhacks_2020_gstreamer_talk.md](https://gist.github.com/velovix/8cbb9bb7fe86a08fb5aa7909b2950259)
+
 ## Sabado 18 de marzo
 
 
@@ -65,6 +67,7 @@ Se prueba lo obtenido con pipelines de gstreamer en python en dos computadoras s
 
 #### Imagen inical de yocto con  1 layer
 
+Para la creación de un layer y una receta se siguió la guía: (The linux Foundation - octo Project Summit Intro to Yocto Project octo Project Summit Intro to Yocto Project )[https://docs.google.com/presentation/d/1Deiv7qxe85H07udskfJUnzt2vwMvSQXgjmWqp1ci7_w/edit#slide=id.p114]
 Se empieza a investigar sobre yocto y se realiza un proyecto de yocto con un primer layer.
 
 Se muestra el proyecto de yocto en la carpeta buildgst:
