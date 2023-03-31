@@ -56,6 +56,9 @@ se instaló con  ./configure  make  sudo make install
 Se verificó la instalación con make --version
 La versión es la 3.7
 
+Fuente:https://docs.yoctoproject.org/brief-yoctoprojectqs/index.html
+Fuente:https://docs.google.com/presentation/d/1Deiv7qxe85H07udskfJUnzt2vwMvSQXgjmWqp1ci7_w/edit#slide=id.p85
+
 ### Domingo 12 de Marzo
 
 Se intentó hacer las pruebas de audio por red que investigó Daniel:
